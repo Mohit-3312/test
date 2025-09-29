@@ -1,13 +1,13 @@
-# Use Tomcat 9 with a recent JDK
+# Stage 1: Build with Maven
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn -B -DskipTests clean package
+
+# Stage 2: Run with Tomcat
 FROM tomcat:9.0-jdk17
-
-# Remove default ROOT app
 RUN rm -rf /usr/local/tomcat/webapps/ROOT
-
-# Copy the built WAR into the image as ROOT.war so app serves from "/"
-# Ensure your build produces target/hello-servlet.war
-COPY target/hello-servlet.war /usr/local/tomcat/webapps/ROOT.war
-
+COPY --from=builder /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
 EXPOSE 8080
-
 CMD ["catalina.sh", "run"]
