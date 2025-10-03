@@ -19,6 +19,8 @@ public class HelloServlet extends HttpServlet {
         try (PrintWriter out = resp.getWriter()) {
             out.println("<!doctype html><html><head><title>Hello</title></head><body>");
             out.println("<h1>Hello, World! 👋</h1>");
+            String Env = System.getenv("System_Envi");
+            out.println("<h1>"+Env+"</h1>");
             out.println("</body></html>");
         }
     }
